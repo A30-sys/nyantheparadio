@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyanthepa Admin | Fixed Mobile Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --green:#76bc21; --blue:#3b82f6; --dark:#03060f;
+    --card:rgba(20,27,45,0.8); --border:rgba(255,255,255,0.08);
+    --dim:#64748b;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--dark); color:#fff; font-family:'Inter', sans-serif; overflow-x:hidden; }
+
+  /* AUTH GATE */
+  #auth-gate { position:fixed; inset:0; background:var(--dark); z-index:9999; display:flex; align-items:center; justify-content:center; }
+  .auth-box { background:var(--card); padding:30px; border-radius:24px; border:1px solid var(--border); text-align:center; width:90%; max-width:350px; }
+
+  /* TOP BAR NAVIGATION */
+  header {
+    position:fixed; top:0; width:100%; height:70px; background:rgba(3,6,15,0.9);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:1000;
+  }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:900; font-size:14px; letter-spacing:1px; }
+  .brand img { width:32px; height:32px; border-radius:8px; }
+
+  /* 3-LINE MENU BUTTON */
+  .menu-btn {
+    background:none; border:1px solid var(--border); padding:8px; border-radius:8px;
+    cursor:pointer; display:flex; flex-direction:column; gap:4px; opacity:0.4; transition:0.3s;
+  }
+  .menu-btn:active, .menu-btn.open { opacity:1; border-color:var(--green); background:rgba(118,188,33,0.1); }
+  .bar { width:18px; height:2px; background:#fff; transition:0.3s; }
+  .menu-btn.open .bar:nth-child(1) { transform:translateY(6px) rotate(45deg); }
+  .menu-btn.open .bar:nth-child(2) { opacity:0; }
+  .menu-btn.open .bar:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
+
+  /* SLIDE OUT DRAWER */
+  .drawer {
+    position:fixed; top:0; right:-280px; width:280px; height:100vh;
+    background:rgba(3,6,15,0.98); border-left:1px solid var(--border);
+    padding:100px 20px; display:flex; flex-direction:column; gap:10px;
+    transition:0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index:999;
+  }
+  .drawer.open { right:0; }
+  .nav-item {
+    background:none; border:none; color:var(--dim); padding:15px 20px;
+    border-radius:12px; text-align:left; font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .nav-item.active { background:rgba(118,188,33,0.1); color:var(--green); }
+
+  /* MAIN CONTENT AREA */
+  main { padding:90px 20px 40px; max-width:800px; margin:0 auto; }
+  .welcome { margin-bottom:25px; }
+  .welcome h1 { font-size:24px; font-weight:900; }
+  .welcome p { color:var(--dim); font-size:13px; }
+
+  /* STATS CARDS */
+  .stats-row { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:30px; }
+  .s-card { background:var(--card); padding:20px; border-radius:20px; border:1px solid var(--border); }
+  .s-label { font-size:10px; font-weight:800; color:var(--dim); text-transform:uppercase; letter-spacing:1px; }
+  .s-val { font-size:28px; font-weight:900; margin-top:5px; color:var(--green); }
+
+  /* POSTING FORM */
+  .form-card { background:var(--card); border:1px solid var(--border); border-radius:24px; padding:25px; margin-bottom:30px; }
+  input, select, textarea {
+    width:100%; padding:14px; background:rgba(255,255,255,0.03); border:1px solid var(--border);
+    border-radius:12px; color:#fff; font-family:inherit; margin-bottom:15px; outline:none;
+  }
+  input:focus { border-color:var(--green); }
+  .btn-pub { background:var(--green); color:#fff; border:none; padding:16px; border-radius:12px; font-weight:900; width:100%; cursor:pointer; }
+
+  /* LIST ITEMS */
+  .list-item { 
+    background:var(--card); padding:15px; border-radius:16px; border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;
+  }
+  .list-info h4 { font-size:14px; margin-bottom:2px; }
+  .list-info p { font-size:11px; color:var(--dim); }
+  .btn-del { background:rgba(239,68,68,0.1); color:#ef4444; border:none; padding:8px 12px; border-radius:8px; font-weight:700; font-size:11px; }
+
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<div id="auth-gate">
+  <div class="auth-box">
+    <h2 style="margin-bottom:20px">Admin Access</h2>
+    <input type="password" id="pin-field" placeholder="Enter PIN" style="text-align:center; font-size:20px; letter-spacing:5px">
+    <button class="btn-pub" onclick="doLogin()">UNLOCK STATION</button>
+  </div>
+</div>
+
+<header>
+  <div class="brand">
+    <img src="https://i.postimg.cc/6pzvf1Nw/FB-IMG-1778068862994.jpg">
+    <span>NYANTHEPA PRO</span>
+  </div>
+  <button class="menu-btn" onclick="toggleMenu()" id="menu-icon">
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+  </button>
+</header>
+
+<div class="drawer" id="side-drawer">
+  <button class="nav-item active" onclick="nav('dash', this)">DASHBOARD</button>
+  <button class="nav-item" onclick="nav('post', this)">PUBLISH CONTENT</button>
+  <button class="nav-item" onclick="nav('req', this)">LIVE REQUESTS</button>
+  <button class="nav-item" style="color:#ef4444; margin-top:auto" onclick="location.reload()">LOGOUT</button>
+</div>
+
+<main>
+  <!-- DASHBOARD -->
+  <div id="view-dash">
+    <div class="welcome">
+      <h1>Hello, Admin 👋</h1>
+      <p>Here is what's happening on your airwaves.</p>
+    </div>
+    <div class="stats-row">
+      <div class="s-card"><p class="s-label">Total Posts</p><div class="s-val" id="stat-posts">0</div></div>
+      <div class="s-card"><p class="s-label">Requests</p><div class="s-val" id="stat-reqs" style="color:#f472b6">0</div></div>
+    </div>
+    <div class="form-card">
+      <h4 style="margin-bottom:15px; font-size:14px">Station Activity</h4>
+      <canvas id="dashChart"></canvas>
+    </div>
+  </div>
+
+  <!-- PUBLISH -->
+  <div id="view-post" class="hidden">
+    <div class="form-card" id="post-form">
+      <h2 style="margin-bottom:20px">Create Update</h2>
+      <select id="f-cat">
+        <option value="news">Local News</option>
+        <option value="sports">Sports Hub</option>
+        <option value="media">Music Box</option>
+      </select>
+      <input type="text" id="f-title" placeholder="Title">
+      <textarea id="f-desc" placeholder="Message/Description" rows="3"></textarea>
+      <input type="text" id="f-img" placeholder="Image URL">
+      <button class="btn-pub" id="btn-save" onclick="saveContent()">PUBLISH TO SITE</button>
+    </div>
+    <h3 style="margin-bottom:15px">Recent Activity</h3>
+    <div id="activity-list"></div>
+  </div>
+
+  <!-- REQUESTS -->
+  <div id="view-req" class="hidden">
+    <h2 style="margin-bottom:20px">Listener Requests</h2>
+    <div id="live-requests"></div>
+  </div>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBnguGZWqLOYEqozFbfyrVqn_YtZTnI70I",
+    authDomain: "nyantheparadio.firebaseapp.com",
+    projectId: "nyantheparadio",
+    storageBucket: "nyantheparadio.firebasestorage.app",
+    messagingSenderId: "742017780753",
+    appId: "1:742017780753:web:5cea8d3179f240296ff5b0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  let chartInstance;
+
+  window.doLogin = () => {
+    if(document.getElementById('pin-field').value === 'banda9421') {
+      document.getElementById('auth-gate').classList.add('hidden');
+      startApp();
+    } else { 
+      alert("Wrong PIN"); 
+    }
+  };
+
+  window.toggleMenu = () => {
+    document.getElementById('side-drawer').classList.toggle('open');
+    document.getElementById('menu-icon').classList.toggle('open');
+  };
+
+  window.nav = (v, btn) => {
+    ['dash', 'post', 'req'].forEach(x => document.getElementById('view-'+x).classList.add('hidden'));
+    document.getElementById('view-'+v).classList.remove('hidden');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    btn.classList.add('active');
+    toggleMenu();
+    window.scrollTo(0,0);
+  };
+
+  function startApp() {
+    onSnapshot(query(collection(db, "media"), orderBy("timestamp", "desc")), (snap) => {
+      const posts = []; snap.forEach(d => posts.push({id:d.id, ...d.data()}));
+      renderPosts(posts);
+      updateChart(posts);
+      document.getElementById('stat-posts').innerText = posts.length;
+    });
+
+    onSnapshot(query(collection(db, "requests"), orderBy("timestamp", "desc")), (snap) => {
+      const reqs = []; snap.forEach(d => reqs.push({id:d.id, ...d.data()}));
+      renderReqs(reqs);
+      document.getElementById('stat-reqs').innerText = reqs.filter(r => !r.played).length;
+    });
+  }
+
+  function renderPosts(data) {
+    document.getElementById('activity-list').innerHTML = data.map(p => `
+      <div class="list-item">
+        <div class="list-info">
+          <h4>${p.title || 'Untitled'}</h4>
+          <p>${(p.category || 'media').toUpperCase()}</p>
+        </div>
+        <button class="btn-del" onclick="delPost('${p.id}')">DELETE</button>
+      </div>
+    `).join('');
+  }
+
+  function renderReqs(data) {
+    document.getElementById('live-requests').innerHTML = data.map(r => `
+      <div class="list-item" style="${!r.played ? 'border-color:var(--green)' : ''}">
+        <div class="list-info">
+          <h4>${r.song || 'Unknown Song'}</h4>
+          <p>From: ${r.name || 'Anonymous'}</p>
+        </div>
+        <button class="btn-pub" style="padding:8px; font-size:10px; width:auto;" onclick="markPlayed('${r.id}')">${r.played ? 'PLAYED' : 'PLAY'}</button>
+      </div>
+    `).join('');
+  }
+
+  window.saveContent = async () => {
+    const title = document.getElementById('f-title').value;
+    if(!title) return alert("Please enter a title");
+    
+    await addDoc(collection(db, "media"), {
+      category: document.getElementById('f-cat').value,
+      title: title,
+      description: document.getElementById('f-desc').value,
+      img: document.getElementById('f-img').value,
+      timestamp: serverTimestamp()
+    });
+    
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-img').value = '';
+    alert("Published successfully!");
+  };
+
+  window.delPost = async (id) => confirm("Delete post?") && await deleteDoc(doc(db, "media", id));
+  window.markPlayed = async (id) => await updateDoc(doc(db, "requests", id), {played:true});
+
+  function updateChart(posts) {
+    const cats = { news:0, sports:0, media:0 };
+    posts.forEach(p => { if(cats[p.category] !== undefined) cats[p.category]++; });
+    const ctx = document.getElementById('dashChart');
+    if(chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['News', 'Sports', 'Music'],
+        datasets: [{ data: [cats.news, cats.sports, cats.media], backgroundColor: ['#76bc21', '#3b82f6', '#f472b6'] }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#64748b' } } } }
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyanthepa Radio 107.6 FM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #76bc21; 
+    --blue: #004a99; 
+    --dark: #03060f;
+    --card: rgba(14,21,38,0.7); 
+    --dim: #94a3b8; 
+    --border: rgba(255,255,255,0.08);
+    --text-main: #e2e8f0;
+  }
+  
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background: var(--dark); color: var(--text-main); font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-thumb { background:var(--green); border-radius:10px; }
+
+  /* NAV HEADER */
+  nav {
+    position:fixed; top:0; width:100%; z-index:1000; height:70px;
+    background:rgba(3,6,15,0.85); backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; padding:0 5%;
+  }
+  .nav-brand { display:flex; align-items:center; gap:12px; }
+  .nav-brand img { height:40px; width:40px; border-radius:10px; object-fit:cover; border:2px solid rgba(118,188,33,0.3); }
+  .nav-brand-name { font-weight:900; font-size:14px; letter-spacing:1px; color:#fff; }
+  
+  /* DIM MENU BUTTON */
+  .menu-btn {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px; cursor: pointer; display: flex; flex-direction: column; gap: 4px;
+    transition: 0.3s; z-index: 1002; opacity: 0.4;
+  }
+  .menu-btn:hover, .menu-btn.open { opacity: 1; border-color: var(--green); background: rgba(118,188,33,0.1); }
+  .menu-bar { width: 20px; height: 2px; background-color: #fff; transition: 0.3s; }
+  
+  .menu-btn.open .menu-bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .menu-btn.open .menu-bar:nth-child(2) { opacity: 0; }
+  .menu-btn.open .menu-bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  /* SIDE NAVIGATION DRAWER */
+  .nav-drawer {
+    position: fixed; top: 0; right: -300px; width: 300px; height: 100vh;
+    background: rgba(3,6,15,0.98); backdrop-filter: blur(25px);
+    border-left: 1px solid var(--border); z-index: 1001; padding: 100px 20px 40px;
+    display: flex; flex-direction: column; gap: 8px; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-drawer.open { right: 0; }
+  
+  .drawer-tab {
+    background: none; border: none; color: var(--dim); padding: 12px 20px;
+    border-radius: 10px; cursor: pointer; text-align: left; font-size: 13px;
+    font-weight: 700; transition: 0.2s; width: 100%;
+  }
+  .drawer-tab:hover { color: #fff; background: rgba(255,255,255,0.05); transform: translateX(4px); }
+  .drawer-tab.active { color: var(--green); background: rgba(118,188,33,0.1); }
+
+  .live-badge { display:flex; align-items:center; gap:6px; background:rgba(118,188,33,0.1); padding:5px 12px; border-radius:15px; }
+  .dot { width:7px; height:7px; background:var(--green); border-radius:50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* SECTIONS SCREEN CONTAINER */
+  section { display:none; padding: 90px 5% 60px; animation: fadeInUp 0.5s ease; }
+  section.active { display:block; }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* DYNAMIC MEDIUM CARDS */
+  .posts-grid { 
+    max-width:1200px; margin:0 auto; display:grid; 
+    grid-template-columns:repeat(auto-fill, minmax(270px, 1fr)); gap:20px; 
+  }
+  .post-card { background:var(--card); border:1px solid var(--border); border-radius:18px; overflow:hidden; transition: 0.3s; }
+  .post-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-4px); }
+  .post-body { padding:20px; }
+  .post-title { font-weight:800; font-size:16px; margin-bottom:8px; color:#fff; }
+  .post-desc { color:var(--dim); font-size:13px; line-height:1.6; margin-bottom:14px; }
+
+  /* INFO GRIDS (SCHEDULE & PRESENTERS) */
+  .info-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:20px; max-width:1200px; margin:0 auto; }
+  .presenter-card { background: var(--card); border: 1px solid var(--border); padding: 24px; border-radius: 20px; text-align: center; }
+  .p-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 2px solid var(--green); }
+  
+  .schedule-row { 
+    display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; 
+    border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); margin-bottom: 6px; border-radius: 12px;
+  }
+  .s-time { color: var(--green); font-weight: 800; font-size: 13px; }
+
+  /* FAQ AND CONTACT DESIGN */
+  .faq-section { max-width:800px; margin: 50px auto 20px; }
+  .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+  .faq-item.open { border-color: rgba(118,188,33,0.3); }
+  .faq-q {
+    width: 100%; padding: 20px 24px; background: none; border: none; color: #fff;
+    display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-align: left;
+  }
+  .faq-q-text { font-weight: 700; font-size: 14px; font-family: 'Inter', sans-serif; }
+  .faq-icon { color: var(--green); font-size: 18px; transition: 0.3s; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; color: var(--dim); font-size: 13px; padding: 0 24px; }
+  .faq-item.open .faq-a { max-height: 200px; padding: 0 24px 20px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 14px; }
+
+  .contact-box {
+    background: rgba(14,21,38,0.4); border: 1px solid var(--border); border-radius: 24px; padding: 40px; text-align: center; max-width: 800px; margin: 40px auto 0;
+  }
+  .contact-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 24px; }
+  .contact-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 18px 24px; min-width: 220px; }
+
+  .field-input {
+    width:100%; padding:14px 18px; background:rgba(255,255,255,0.03);
+    border:1px solid var(--border); color:#fff; border-radius:12px; font-size:14px; outline:none; margin-bottom:16px;
+  }
+  .field-input:focus { border-color:var(--green); }
+
+  footer { background:#010205; border-top:1px solid var(--border); padding:60px 5% 40px; }
+  .footer-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:40px; margin-bottom: 40px; }
+  .footer-head { font-weight:900; font-size:11px; letter-spacing:2px; color:var(--green); margin-bottom:20px; text-transform: uppercase; }
+  .footer-link { display:block; color:var(--dim); text-decoration:none; font-size:13px; margin-bottom:12px; transition:0.2s; }
+  .footer-link:hover { color:var(--green); }
+  
+  .social-flex { display:flex; gap:12px; margin-top:10px; }
+  .social-icon { width:38px; height:38px; border-radius:10px; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; text-decoration:none; color:#fff; transition:0.3s; }
+  .social-icon:hover { background:var(--green); transform:translateY(-3px); }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION HEADER -->
+<nav>
+  <div class="nav-brand">
+    <img src="https://i.postimg.cc/6pzvf1Nw/FB-IMG-1778068862994.jpg" alt="Logo">
+    <div class="nav-brand-name">NYANTHEPA 107.6 FM</div>
+  </div>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <div class="live-badge"><div class="dot"></div> <span style="font-size:10px; font-weight:900; color:var(--green);">LIVE</span></div>
+    <button class="menu-btn" onclick="toggleDrawer()" id="drawer-toggle">
+      <div class="menu-bar"></div><div class="menu-bar"></div><div class="menu-bar"></div>
+    </button>
+  </div>
+</nav>
+
+<!-- SLIDE DRAWER LINKS -->
+<div class="nav-drawer" id="side-drawer">
+  <button class="drawer-tab active" onclick="showSection('home')" id="tab-home">HOME </button>
+  <button class="drawer-tab" onclick="showSection('news')" id="tab-news">LOCAL NEWS BULLETIN</button>
+  <button class="drawer-tab" onclick="showSection('sports')" id="tab-sports">SPORTS HUB</button>
+  <button class="drawer-tab" onclick="showSection('media')" id="tab-media">MUSIC ARCHIVE</button>
+  <button class="drawer-tab" onclick="showSection('presenters')" id="tab-presenters">RADIO PRESENTERS</button>
+  <button class="drawer-tab" onclick="showSection('schedule')" id="tab-schedule">PROGRAM SHOWS</button>
+  <button class="drawer-tab" onclick="showSection('request')" id="tab-request">SUBMIT REQUEST</button>
+</div>
+
+<!-- HOME MAIN VIEW -->
+<section id="sec-home" class="active">
+  <div style="text-align:center; padding:40px 0 30px;">
+    <h1 style="font-size:clamp(36px, 8vw, 72px); font-weight:900; letter-spacing:-2px; line-height:1.0; margin-bottom:12px;">Nyanthepa Radio</h1>
+    <p style="color:var(--green); font-weight:800; letter-spacing:4px; font-size:12px;">THE VOICE OF THE LOWER SHIRE</p>
+  </div>
+
+  <div style="max-width:1200px; margin:0 auto 40px;">
+    <div class="post-card" style="background:linear-gradient(135deg, rgba(0,74,153,0.25), rgba(14,21,38,0.8)); border-color:rgba(118,188,33,0.2); padding:30px; text-align:center;">
+       <h3 style="color:#fff; margin-bottom:10px;">Live Player Audio Stream</h3>
+       <p style="font-size:13px; color:var(--dim); margin-bottom:20px;">Broadcasting live from Nsanje Boma, Malawi.</p>
+       <audio controls style="width:100%; max-width:440px;"><source src="YOUR_STREAM_URL"></audio>
+    </div>
+  </div>
+
+  <!-- CLEAN HOME FAQ SECTION -->
+  <div class="faq-section">
+    <h3 style="font-size: 22px; font-weight: 900; color: #fff; text-align: center; margin-bottom: 24px;">Frequently Asked Questions</h3>
+    <div id="faq-list"></div>
+  </div>
+
+  <!-- CLEAN HOME CONTACT SWAP CARD -->
+  <div class="contact-box">
+    <h3 style="color:#fff; font-size:22px; font-weight:800;">Contact Studio Control</h3>
+    <div class="contact-grid">
+      <div class="contact-card"><h4>📞 Phone Line</h4><p style="color:var(--green); font-size:13px; margin-top:4px;">+265 882 805 962</p></div>
+      <div class="contact-card"><h4>📧 Email Desk</h4><p style="color:var(--green); font-size:13px; margin-top:4px;">nyanthepacommunity@gmail.com</p></div>
+      <div class="contact-card"><h4>📍 Main Office</h4><p style="color:var(--green); font-size:13px; margin-top:4px;">Nsanje Boma, Malawi</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCAL NEWS CATEGORY -->
+<section id="sec-news">
+  <h2 style="margin-bottom:24px; text-align:center; font-weight:900;">Local News Feed</h2>
+  <div class="posts-grid" id="news-container"></div>
+</section>
+
+<!-- SPORTS CATEGORY -->
+<section id="sec-sports">
+  <h2 style="margin-bottom:24px; text-align:center; font-weight:900;">Sports Hub Updates</h2>
+  <div class="posts-grid" id="sports-container"></div>
+</section>
+
+<!-- MEDIA CATEGORY -->
+<section id="sec-media">
+  <h2 style="margin-bottom:24px; text-align:center; font-weight:900;">Music Archive Feed</h2>
+  <div class="posts-grid" id="media-container"></div>
+</section>
+
+<!-- RADIO PRESENTERS SEPARATE SECTION -->
+<section id="sec-presenters">
+  <h2 style="margin-bottom:30px; text-align:center; font-weight:900;">Radio Stars & Presenters</h2>
+  <div class="info-grid">
+    <div class="presenter-card">
+      <img src="https://i.postimg.cc/6pzvf1Nw/FB-IMG-1778068862994.jpg" class="p-img">
+      <h4 style="color:#fff;">Nyanthepa DJ Crew</h4>
+      <p style="font-size:12px; color:var(--green); margin-top:4px; font-weight:700;">Live On-Air Team</p>
+    </div>
+  </div>
+</section>
+
+<!-- DAILY PROGRAM TIMETABLE SECTION -->
+<section id="sec-schedule">
+  <h2 style="margin-bottom:30px; text-align:center; font-weight:900;">Broadcast Program Timetable</h2>
+  <div style="max-width:640px; margin:0 auto;">
+    <div class="schedule-row"><span class="s-time">06:00 AM - 09:00 AM</span> <span style="font-weight:700;">Morning Wave Show</span></div>
+    <div class="schedule-row"><span class="s-time">09:00 AM - 12:00 PM</span> <span style="font-weight:700;">Mid-Day Hits Playlist</span></div>
+    <div class="schedule-row"><span class="s-time">12:00 PM - 01:00 PM</span> <span style="font-weight:700;">Lower Shire News Bulletin</span></div>
+    <div class="schedule-row"><span class="s-time">02:00 PM - 05:00 PM</span> <span style="font-weight:700;">Sunset Cruise Groove</span></div>
+  </div>
+</section>
+
+<!-- LIVE REQUEST FORM HUB -->
+<section id="sec-request">
+  <div style="max-width:500px; margin:0 auto;" class="post-card">
+    <div class="post-body">
+      <h3 style="color:#fff; margin-bottom:6px;">Live Airwaves Request</h3>
+      <div id="req-form" style="margin-top:15px;">
+        <input class="field-input" id="req-song" placeholder="Song Title Name">
+        <input class="field-input" id="req-name" placeholder="Your Name & Location">
+        <button onclick="submitRequest()" style="width:100%; padding:14px; background:var(--green); border:none; color:#fff; font-weight:900; border-radius:10px; cursor:pointer;">SEND DJ REQUEST</button>
+      </div>
+      <div id="req-success" style="display:none; text-align:center; color:var(--green); font-weight:800; padding:10px 0;">✨ Sent successfully! Listen live to hear it drop.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-head">Station Directory</div>
+      <a href="#" onclick="showSection('home')" class="footer-link">Live Broadcast Player</a>
+      <a href="#" onclick="showSection('schedule')" class="footer-link">Full Show Timetable</a>
+      <a href="#" onclick="showSection('presenters')" class="footer-link">Meet Our DJ Presenters</a>
+    </div>
+    <div>
+      <div class="footer-head">Privacy & Legal Operations</div>
+      <a href="#" onclick="alert('Our Policy: We protect user data supplied on requests safely.')" class="footer-link">Privacy Policy Guidelines</a>
+      <a href="#" onclick="alert('Terms: Users agree to submit respectful media requests matching rules.')" class="footer-link">Terms & Regulation Rules</a>
+    </div>
+    <div>
+      <div class="footer-head">Social Airwave Connections</div>
+      <div class="social-flex">
+        <a href="https://facebook.com" target="_blank" class="social-icon">f</a>
+        <a href="https://wa.me/265882805962" target="_blank" class="social-icon">w</a>
+      </div>
+      <p style="margin-top:20px; font-size:13px; color:var(--dim); font-weight:600;">Hotline: +265 882 805 962</p>
+    </div>
+  </div>
+  <div style="border-top:1px solid rgba(255,255,255,0.05); padding-top:30px; text-align:center;">
+    <p style="font-size:12px; color:#334155;">© 2026 Nyanthepa Radio 107.6 FM. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, orderBy, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBnguGZWqLOYEqozFbfyrVqn_YtZTnI70I",
+    authDomain: "nyantheparadio.firebaseapp.com",
+    projectId: "nyantheparadio",
+    storageBucket: "nyantheparadio.firebasestorage.app",
+    messagingSenderId: "742017780753",
+    appId: "1:742017780753:web:5cea8d3179f240296ff5b0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const FAQ = [
+    { q: "What frequency is Nyanthepa Radio on?", a: "Nyanthepa Radio broadcasts live at 107.6 FM, covering Nsanje Boma and regions across the Lower Shire Valley." },
+    { q: "How can I request a song live?", a: "Open the navigation menu, select SUBMIT REQUEST, enter the details, and hit send! Our presenters will play it right on air." },
+    { q: "Can I listen live on my smartphone?", a: "Yes! Our platform layout is fully responsive. Simply load up the home dashboard page and press play on the stream card player." },
+    { q: "Where can I contact the studio directly?", a: "You can reach our main studio switchboard or send official messages directly by dialling +265 882 805 962." }
+  ];
+
+  function buildFAQ() {
+    const container = document.getElementById('faq-list');
+    if (!container) return;
+    container.innerHTML = ""; // Clear out to avoid duplicate runs
+    FAQ.forEach((item, i) => {
+      container.innerHTML += `
+        <div class="faq-item" id="faq-${i}">
+          <button class="faq-q" onclick="toggleFAQ(${i})">
+            <span class="faq-q-text">${item.q}</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><div>${item.a}</div></div>
+        </div>`;
+    });
+  }
+
+  // EXPOSE ALL FUNCTIONS EXPLICITLY TO THE WINDOW OBJECT
+  window.toggleDrawer = () => {
+    document.getElementById('side-drawer').classList.toggle('open');
+    document.getElementById('drawer-toggle').classList.toggle('open');
+  };
+
+  window.toggleFAQ = (i) => {
+    document.getElementById('faq-' + i).classList.toggle('open');
+  };
+
+  window.showSection = (v) => {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-' + v).classList.add('active');
+    
+    document.querySelectorAll('.drawer-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + v).classList.add('active');
+    
+    document.getElementById('side-drawer').classList.remove('open');
+    document.getElementById('drawer-toggle').classList.remove('open');
+    window.scrollTo(0,0);
+  };
+
+  window.submitRequest = async () => {
+    const song = document.getElementById('req-song').value.trim();
+    const name = document.getElementById('req-name').value.trim();
+    if(!song || !name) return alert("Fill out all empty fields please");
+    await addDoc(collection(db, "requests"), { song, name, timestamp: serverTimestamp(), played: false });
+    
+    document.getElementById('req-form').style.display = 'none';
+    document.getElementById('req-success').style.display = 'block';
+  };
+
+  async function loadData() {
+    try {
+      const snap = await getDocs(query(collection(db, "media"), orderBy("timestamp", "desc")));
+      const cats = { news: [], sports: [], media: [] };
+      snap.forEach(d => {
+        const data = d.data();
+        if(cats[data.category]) cats[data.category].push(data);
+      });
+
+      ['news', 'sports', 'media'].forEach(cat => {
+        const container = document.getElementById(cat + '-container');
+        if(!container) return;
+        
+        container.innerHTML = cats[cat].map(item => `
+          <div class="post-card">
+            ${item.img ? `<img src="${item.img}" style="width:100%; height:150px; object-fit:cover;">` : ''}
+            <div class="post-body">
+              <h4 class="post-title">${item.title}</h4>
+              <p class="post-desc">${item.description}</p>
+              ${item.audioUrl ? `<audio controls style="width:100%"><source src="${item.audioUrl}"></audio>` : ''}
+            </div>
+          </div>
+        `).join('');
+      });
+    } catch (e) {
+      console.error("Content failed loading", e);
+    }
+  }
+
+  // RUN STARTER LOGIC ON APPLICATION LOAD
+  buildFAQ();
+  loadData();
+</script>
+</body>
+</html>
