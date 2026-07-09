@@ -1,0 +1,11 @@
+{
+  "nfm_admin_pw": "\"nfm2024\"",
+  "nfm_presenters": "[]",
+  "nfm_requests": "[]",
+  "nfm_settings": "{\"stationName\":\"Nyanthepa FM\",\"tagline\":\"The Pulse of the Lower Shire Community\",\"streamUrl\":\"\",\"phone\":\"+265 999 000 000\",\"email\":\"info@nyanthepa.fm\",\"address\":\"Nsanje Boma, Lower Shire Valley\",\"facebookUrl\":\"\",\"whatsappUrl\":\"\",\"logoUrl\":\"\"}",
+  "nfm_ads": "[{\"id\":1,\"title\":\"Advertise With Us\",\"advertiserName\":\"Nyanthepa FM 107.6\",\"videoUrl\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTYwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjE2MCIgZmlsbD0iIzFhM2E1YyIvPjx0ZXh0IHg9IjQwMCIgeT0iNzAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjI2IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkFkdmVydGlzZSB3aXRoIE55YW50aGVwYSBGTSAxMDcuNjwvdGV4dD48dGV4dCB4PSI0MDAiIHk9IjExMiIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTciIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC44MikiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlJlYWNoIHRob3VzYW5kcyBhY3Jvc3MgdGhlIExvd2VyIFNoaXJlIFZhbGxleTwvdGV4dD48L3N2Zz4=\",\"linkUrl\":\"\",\"active\":true,\"sortOrder\":0},{\"id\":2,\"title\":\"Support Local Radio\",\"advertiserName\":\"Community Message\",\"videoUrl\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTYwIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjE2MCIgZmlsbD0iIzJkN2E1NyIvPjx0ZXh0IHg9IjQwMCIgeT0iNzAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjI2IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlN1cHBvcnQgWW91ciBMb2NhbCBDb21tdW5pdHkgUmFkaW88L3RleHQ+PHRleHQgeD0iNDAwIiB5PSIxMTIiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE3IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuODIpIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5OeWFudGhlcGEgRk0gMTA3LjYg4oCUIFRoZSBWb2ljZSBvZiBOc2FuamUgQm9tYTwvdGV4dD48L3N2Zz4=\",\"linkUrl\":\"\",\"active\":true,\"sortOrder\":1}]",
+  "nfm_posts": "[]",
+  "nfm_schedule": "[]",
+  "nfm_init": "true",
+  "nfm_tracks": "[]"
+}
